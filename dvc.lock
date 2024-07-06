@@ -1,0 +1,112 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/pipeline/data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 644f0791d6d1982b55c917eee1bd091b
+      size: 746
+    - path: src/pipeline/data_ingestion.py
+      hash: md5
+      md5: ebe6683b9f578888e570c354c516acfd
+      size: 1128
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: 6286157db18ee901dd95bda6d555924a.dir
+      size: 887224
+      nfiles: 2
+  data_preprocessing:
+    cmd: python src/pipeline/data_preprocessing.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 644f0791d6d1982b55c917eee1bd091b
+      size: 746
+    - path: data/raw
+      hash: md5
+      md5: 6286157db18ee901dd95bda6d555924a.dir
+      size: 887224
+      nfiles: 2
+    - path: src/pipeline/data_preprocessing.py
+      hash: md5
+      md5: 0738be05e701aaea26654bd345679bc4
+      size: 3289
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 0c23fa22051c4030a9d871e505ab849f.dir
+      size: 681409
+      nfiles: 2
+  feature_engineering:
+    cmd: python src/pipeline/feature_engineering.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 644f0791d6d1982b55c917eee1bd091b
+      size: 746
+    - path: data/processed
+      hash: md5
+      md5: 0c23fa22051c4030a9d871e505ab849f.dir
+      size: 681409
+      nfiles: 2
+    - path: src/pipeline/feature_engineering.py
+      hash: md5
+      md5: af53133e8f112c12ad93ede67847e26c
+      size: 1962
+    outs:
+    - path: data/features
+      hash: md5
+      md5: ead4b4e3695f73f0f23c1d7f34fc522d.dir
+      size: 1326008
+      nfiles: 2
+  model_building:
+    cmd: python src/pipeline/model_building.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 644f0791d6d1982b55c917eee1bd091b
+      size: 746
+    - path: data/features
+      hash: md5
+      md5: ead4b4e3695f73f0f23c1d7f34fc522d.dir
+      size: 1326008
+      nfiles: 2
+    - path: src/pipeline/model_building.py
+      hash: md5
+      md5: 4e40aa7a926b964eefe252c57625ecc4
+      size: 1162
+    outs:
+    - path: artifacts/models
+      hash: md5
+      md5: bd854035857f6903a29acd5feef7746c.dir
+      size: 63133
+      nfiles: 1
+  predictions:
+    cmd: python src/pipeline/predictions.py
+    deps:
+    - path: artifacts/models
+      hash: md5
+      md5: bd854035857f6903a29acd5feef7746c.dir
+      size: 63133
+      nfiles: 1
+    - path: config/config.yaml
+      hash: md5
+      md5: 644f0791d6d1982b55c917eee1bd091b
+      size: 746
+    - path: data/features
+      hash: md5
+      md5: ead4b4e3695f73f0f23c1d7f34fc522d.dir
+      size: 1326008
+      nfiles: 2
+    - path: src/pipeline/predictions.py
+      hash: md5
+      md5: f10b649a3ce6ac9f8df6346f1d808188
+      size: 1423
+    outs:
+    - path: artifacts/metrics
+      hash: md5
+      md5: 82d652a4d9c07c717c98d20eb3509c52.dir
+      size: 133
+      nfiles: 1

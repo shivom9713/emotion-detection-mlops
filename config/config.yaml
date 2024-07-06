@@ -1,0 +1,22 @@
+path:
+  root_path: "C:/Users/XM891JZ/OneDrive - EY/Desktop/MLOPs learning/Emotion_detection"
+  data:
+    ingestion:
+      url: "https://raw.githubusercontent.com/campusx-official/jupyter-masterclass/main/tweet_emotions.csv"
+    raw:
+      train_data: "data/raw/train_data.csv"
+      test_data: "data/raw/test_data.csv"
+
+    processed:
+      train_data: "data/processed/train_data.csv"
+      test_data: "data/processed/test_data.csv"
+
+    features:
+      bow:
+        train_data: "data/features/{{algo}}_train_data.csv"
+        test_data: "data/features/{{algo}}_test_data.csv"
+
+  model: "artifacts/models/{{algo}}_model.pkl"
+  metrics: "artifacts/metrics/{{algo}}_metrics.json"
+
+algo: "bow" # Choose out of BOW, others ....
