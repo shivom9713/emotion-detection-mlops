@@ -4,6 +4,8 @@ stages:
     deps: #Depends on 
     - src/pipeline/data_ingestion.py
     - config/config.yaml
+    params: 
+    - data_ingestion.test_size
     outs: # output it gives
     - data/raw
   data_preprocessing:
@@ -12,6 +14,7 @@ stages:
     - data/raw
     - config/config.yaml
     - src/pipeline/data_preprocessing.py
+    
     outs:
     - data/processed
   feature_engineering:
@@ -20,6 +23,8 @@ stages:
     - config/config.yaml
     - data/processed
     - src/pipeline/feature_engineering.py
+    params: 
+    - feature_engineering.max_features
     outs:
     - data/features
   model_building:
@@ -28,6 +33,9 @@ stages:
     - config/config.yaml
     - data/features
     - src/pipeline/model_building.py
+    params: 
+    - model_building.n_estimators
+    - model_building.learning_rate
     outs:
     - artifacts/models
   predictions:

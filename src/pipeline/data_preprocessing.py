@@ -5,26 +5,23 @@ import string
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer
-import os, yaml, sys
+import os, yaml, sys, logging
+
+
 
 # Add the src directory to PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils.utils import create_folder_structure, load_config
+from utils.utils import create_folder_structure, load_config, load_params, script_logger
 
-config = load_config()
-
+logger = script_logger('data_preprocessing', 'DEBUG')
 
 nltk.download('wordnet')
 nltk.download('stopwords')
 
 def lemmatization(text):
     lemmatizer= WordNetLemmatizer()
-
     text = text.split()
-
     text=[lemmatizer.lemmatize(y) for y in text]
-
     return " " .join(text)
 
 def remove_stop_words(text):
@@ -37,11 +34,8 @@ def removing_numbers(text):
     return text
 
 def lower_case(text):
-
     text = text.split()
-
     text=[y.lower() for y in text]
-
     return " " .join(text)
 
 def removing_punctuations(text):
@@ -81,27 +75,40 @@ def normalized_sentence(sentence):
     sentence= lemmatization(sentence)
     return sentence
 
-#Read Paths from the config file
-root_path = config['path']['root_path']
-train_data_path = os.path.join(root_path, config['path']['data']['raw']['train_data'])
-test_data_path = os.path.join(root_path, config['path']['data']['raw']['test_data'])
+def main():
+    logger.info('Data Preprocessing Started')
 
-train_data = pd.read_csv(train_data_path)
-test_data = pd.read_csv(test_data_path)
+    config = load_config()
+    params = load_params()
+    #Read Paths from the config file
+    root_path = config['path']['root_path']
+    train_data_path = os.path.join(root_path, config['path']['data']['raw']['train_data'])
+    test_data_path = os.path.join(root_path, config['path']['data']['raw']['test_data'])
 
-train_data = normalize_text(train_data)
-test_data = normalize_text(test_data)
+    train_data = pd.read_csv(train_data_path)
+    test_data = pd.read_csv(test_data_path)
 
-# Store Processed Data
+    train_data = normalize_text(train_data)
+    test_data = normalize_text(test_data)
 
-processed_train_data_path = os.path.join(root_path, config['path']['data']['processed']['train_data'])
-processed_test_data_path = os.path.join(root_path, config['path']['data']['processed']['test_data'])
+    # Store Processed Data
+
+    processed_train_data_path = os.path.join(root_path, config['path']['data']['processed']['train_data'])
+    processed_test_data_path = os.path.join(root_path, config['path']['data']['processed']['test_data'])
 
 
-create_folder_structure(processed_train_data_path)
+    create_folder_structure(processed_train_data_path)
 
-train_data.to_csv(processed_train_data_path)
-test_data.to_csv(processed_test_data_path)
+    train_data.to_csv(processed_train_data_path)
+    test_data.to_csv(processed_test_data_path)
+
+    logger.info('Data Preprocessing Completed')
+
+if __name__ == "__main__":
+    main()
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-import os, yaml
+import os, yaml, logging
 from jinja2 import Environment, FileSystemLoader
 
 def create_folder_structure(path):
@@ -8,9 +8,6 @@ def create_folder_structure(path):
         print(f"Directory '{folder_path}' created.")
     else:
         print(f"Directory '{folder_path}' already exists.")
-
-
-
 
 
 def load_config():
@@ -33,4 +30,35 @@ def load_config():
     config = yaml.safe_load(rendered_config)
 
     return config
+
+def load_params():
+    with open("./params.yaml", 'r') as file:
+        config = yaml.safe_load(file)
+    return config
+
+def script_logger(script_name, level = 'DEBUG'):
+    """
+    Creating Logging Handler
+    """
+
+    # Configure Logging
+
+    logger = logging.getLogger(script_name)
+    logger.setLevel('DEBUG')
+    
+    # Creating console Handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(level)
+
+    file_handler = logging.FileHandler('./logs/pipeline_logs.log')
+    file_handler.setLevel(level)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+
+    return logger
 
